@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    public UserDaoJDBCImpl() {
 
+    private  Connection connection;
+    public UserDaoJDBCImpl() throws SQLException, ClassNotFoundException {
+        this.connection = Util.getConnection();
     }
+
 
     @Override
     public void createUsersTable() throws SQLException, ClassNotFoundException {
@@ -19,8 +22,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 "(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(35) NOT NULL, lastName VARCHAR(35) NOT NULL, " +
                 "age TINYINT NOT NULL)";
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement();) {
+        try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -30,12 +32,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS users";
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement();) {
+        try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -46,8 +45,7 @@ public class UserDaoJDBCImpl implements UserDao {
         user.setLastName(lastName);
         user.setAge(age);
         String sql = "INSERT INTO users(name, lastName, age) VALUES(?,?,?)";
-        try (Connection connection = Util.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setByte(3, user.getAge());
@@ -55,21 +53,16 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("User с именем " + user.getName() + " добавлен в таблицу.");
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
         String sql = "DELETE FROM users WHERE id = ?";
-        try (Connection connection = Util.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -80,8 +73,7 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
 
-        try (Connection connection = Util.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Long id = rs.getLong("id");
@@ -93,21 +85,16 @@ public class UserDaoJDBCImpl implements UserDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return users;
     }
 
     public void cleanUsersTable() {
         String sql = "DELETE FROM users";
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement();) {
+        try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(sql);
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

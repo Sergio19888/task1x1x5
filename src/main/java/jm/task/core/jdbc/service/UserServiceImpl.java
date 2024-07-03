@@ -9,6 +9,10 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
     UserDao userDao = new UserDaoJDBCImpl();
+
+    public UserServiceImpl() throws SQLException, ClassNotFoundException {
+    }
+
     public void createUsersTable() throws SQLException, ClassNotFoundException {
     userDao.createUsersTable();
     }
