@@ -11,32 +11,17 @@ public class UserDaoJDBCImpl implements UserDao {
 
     private  Connection connection;
     public UserDaoJDBCImpl() throws SQLException, ClassNotFoundException {
-        this.connection = Util.getConnection();
+       //
     }
 
 
     @Override
     public void createUsersTable() throws SQLException, ClassNotFoundException {
 
-        String sql = "CREATE TABLE IF NOT EXISTS users " +
-                "(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
-                "name VARCHAR(35) NOT NULL, lastName VARCHAR(35) NOT NULL, " +
-                "age TINYINT NOT NULL)";
-        try (Statement statement = connection.createStatement();) {
-            statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void dropUsersTable() {
-        String sql = "DROP TABLE IF EXISTS users";
-        try (Statement statement = connection.createStatement();) {
-            statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void saveUser(String name, String lastName, byte age) {
